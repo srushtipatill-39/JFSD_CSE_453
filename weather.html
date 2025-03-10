@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <style>
+        body {
+            background-image: url('https://images.pexels.com/photos/833571/pexels-photo-833571.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260');
+            height: 100vh; 
+            background-size: cover; 
+            background-position: center; 
+            font-family: Arial, sans-serif;
+            margin: 0; 
+            text-align: center; 
+        }
+        #weather {
+            margin-top: 20px;
+            display: inline-block; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather Forecast</h1>
+    <input type="text" id="city" placeholder="Enter city name">
+    <button id="search">Get Weather</button>
+    <div id="weather"></div>
+
+    <script>
+        const apiKey = "d8887b0076f0eaa82ba26f9b2a75a3aa";
+        const searchButton = document.getElementById("search");
+        const weatherDiv = document.getElementById("weather");
+
+        searchButton.addEventListener("click", () => {
+            const city = document.getElementById("city").value;
+            if (city) {
+                fetch(https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.cod === 200) {
+                            const weatherCondition = data.weather[0].main.toLowerCase();
+                            let backgroundImage = 'url("https://images.pexels.com/photos/833571/pexels-photo-833571.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260")'; // Default background
+                            
+                            if (weatherCondition.includes("rain")) {
+                                backgroundImage = 'url("https://kalingatv.com/wp-content/uploads/2018/08/Rainy-Day.jpg")';
+                            } else if (weatherCondition.includes("clear")) {
+                                backgroundImage = 'url("https://wallpapercave.com/wp/TyU0sNP.jpg")';
+                            }
+                            document.body.style.backgroundImage = backgroundImage;
+
+                            const weatherInfo = `
+                                <h2>Weather in ${data.name}</h2>
+                                <p>Temperature: ${data.main.temp} °C</p>
+                                <p>Weather: ${data.weather[0].description}</p>
+                            `;
+                            weatherDiv.innerHTML = weatherInfo;
+                        } else {
+                            weatherDiv.innerHTML = <p>${data.message}</p>;
+                        }
+                    })
+                    .catch(error => {
+                        weatherDiv.innerHTML = <p>Error fetching weather data.</p>;
+                    });
+            } else {
+                weatherDiv.innerHTML = <p>Please enter a city name.</p>;
+            }
+        });
+    </script>
+</body>
+</html>
